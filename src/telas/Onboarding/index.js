@@ -1,15 +1,26 @@
 import React, { useState } from 'react';
-import { View, Text, StatusBar, Image, TouchableOpacity, LayoutAnimation } from 'react-native';
+import { Image, LayoutAnimation, StatusBar, Text, TouchableOpacity, View } from 'react-native';
+import { Carrossel } from '../../componentes/Carrossel';
+import { Formulario } from '../../componentes/Formulario';
 import FundoOndulado from '../../componentes/FundoOndulado';
 import { TelaDeFundo } from '../../componentes/TelaDeFundo';
-import { Formulario } from '../../componentes/Formulario';
 import itens from './cards';
 import styles from './styles';
-import { Carrossel } from '../../componentes/Carrossel';
 
 export default function Onboarding({ navigation }) {
   const [fazerLogin, setFazerLogin] = useState(false);
   const [altura, setAltura] = useState(250);
+
+  const animacaoCustomizada = {
+    duration: 1000,
+    create : {
+      type: LayoutAnimation.Types.spring,
+      property: LayoutAnimation.Properties.scaleXY,
+      springDamping: 0.7
+    }
+  }
+
+  LayoutAnimation.configureNext(animacaoCustomizada)
 
   function avancar() {
     if (fazerLogin) {

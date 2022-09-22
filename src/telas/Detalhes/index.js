@@ -1,13 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { TelaDeFundo } from '../../componentes/TelaDeFundo';
 import { InformacoesUsuario } from '../../componentes/InformacoesUsuario';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import mapa from '../../assets/mapa.png';
 import styles from './styles';
+import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withSequence, withTiming } from 'react-native-reanimated';
 
 export default function Detalhes(props) {
   const dados = props.route.params;
+
+  const  rotacao = useSharedValue(0);
+  const [jaAnimou, setJaAnimou] = useState(false);
+
+  const estiloAnimado = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          rotate: `${rotacao.value}deg`
+        }
+      ]
+    }
+  })
+
+  function fazerRotacao() {
+    rotacao.value = withSequence(
+      withTiming(30, 120),
+      withTiming(-30, 120),
+      withTiming(30, 120),
+      withTiming(-30, 120),
+      withTiming(0, 120),
+    )
+
+    setTimeout(() => {
+      setJaAnimou(true)
+    }, 1800)
+  }
 
   return (
     <TelaDeFundo>
@@ -41,13 +69,16 @@ export default function Detalhes(props) {
           <Text>{dados.endereco}</Text>
           <TouchableOpacity 
             style={styles.botao} 
+            onPress={fazerRotacao}
           >
             <Text style={styles.botaoTexto}>Notificar consulta</Text>
-              <Icon 
-                name={'notifications-none'} 
-                size={20} 
-                color="#FFF"
-              />
+              <Animated.View style={[styles.icone, estiloAnimado]}>
+                <Icon 
+                  name={jaAnimou ? 'notifications' : 'notifications-none'} 
+                  size={20} 
+                  color="#FFF"
+                />
+              </Animated.View>
           </TouchableOpacity>
       </ScrollView>
     </TelaDeFundo>
